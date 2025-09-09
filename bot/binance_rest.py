@@ -87,3 +87,10 @@ class RESTClient:
 
     def futures_account(self) -> Dict[str, Any]:
         return self._request("GET", "/fapi/v2/account", signed=True)
+
+    def futures_ticker_price(self, symbol: str) -> Dict[str, Any]:
+        return self._request("GET", "/fapi/v1/ticker/price", params={"symbol": symbol.upper()})
+
+    def futures_position_risk(self, symbol: str | None = None) -> Dict[str, Any]:
+        params = {"symbol": symbol.upper()} if symbol else None
+        return self._request("GET", "/fapi/v2/positionRisk", signed=True, params=params)

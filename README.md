@@ -5,11 +5,13 @@ This project provides a minimal, extensible Python trading bot targeting the Bin
 Features:
 
 - Market, Limit, and Stop-Limit orders (testnet only)
+ - Market, Limit, Stop-Limit, Stop-Market, Take-Profit, Take-Profit-Market
 - REST implementation (no external abstractions required)
 - Command-line interface with validation
 - Structured logging (console + rotating file)
 - Dry-run mode when API credentials are missing
 - Clean, reusable code structure
+- Optional web UI (FastAPI) with order, grid, diagnostics, balance & positions
 
 > IMPORTANT: This is for educational use on the Binance **Futures Testnet**. Not production-ready. No warranty. Use at your own risk.
 
@@ -58,6 +60,48 @@ Place a stop-limit order:
 ```bash
 python main.py --symbol BTCUSDT --side BUY --type stop_limit --quantity 0.001 --price 76000 --stop-price 75500 
 ```
+
+Stop-Market order (trigger only):
+
+```bash
+python main.py --symbol BTCUSDT --side SELL --type stop_market --quantity 0.001 --stop-price 70000
+```
+
+Take-Profit-Market:
+
+```bash
+python main.py --symbol BTCUSDT --side SELL --type take_profit_market --quantity 0.001 --stop-price 82000
+```
+
+Grid (5 BUY limits below current price every 0.5%):
+
+```bash
+python main.py --symbol BTCUSDT --side BUY --grid --levels 5 --step-pct 0.5 --quantity 0.001 --dry-run
+```
+
+Interactive mode:
+
+```bash
+python main.py --symbol BTCUSDT --interactive
+```
+
+### 2.1 Web UI (Optional)
+
+Start the API + web interface:
+
+```bash
+python -m uvicorn web_server:app --reload --port 8000
+```
+
+Open: http://localhost:8000
+
+Endpoints:
+
+- `GET /api/diagnostics`
+- `POST /api/order`
+- `POST /api/grid`
+- `GET /api/balance`
+- `GET /api/positions`
 
 Dry run (no API keys required):
 
